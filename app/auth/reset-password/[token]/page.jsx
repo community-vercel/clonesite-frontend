@@ -77,7 +77,4 @@ export default function ResetPasswordPage() {
   );
 }
 
-export const metadata = {
-  title: 'Reset Password - Bark Clone',
-  description: 'Reset your password for your Bark Clone account.',
-};
+

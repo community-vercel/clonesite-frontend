@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { useAuth } from '../../hooks/useAuth'
-import { requestsAPI } from '../../services/api'
+import { useAuth } from '../../context/AuthContext'
+// import { requestsAPI } from '../../services/api'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { MapPin, Calendar, DollarSign } from 'lucide-react'
@@ -60,17 +60,17 @@ export default function NewRequest() {
     }
 
     setLoading(true)
-    try {
-      const response = await requestsAPI.create(formData)
-      if (response.success) {
-        toast.success('Request posted successfully!')
-        router.push('/dashboard')
-      }
-    } catch (error) {
-      toast.error('Failed to post request. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    // try {
+    //   const response = await requestsAPI.create(formData)
+    //   if (response.success) {
+    //     toast.success('Request posted successfully!')
+    //     router.push('/dashboard')
+    //   }
+    // } catch (error) {
+    //   toast.error('Failed to post request. Please try again.')
+    // } finally {
+    //   setLoading(false)
+    // }
   }
 
   return (

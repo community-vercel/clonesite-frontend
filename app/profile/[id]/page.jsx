@@ -1,9 +1,9 @@
 'use client';
-import api from '../../lib/api';
+// import api from '../../../../lib/api';
 import Image from 'next/image';
-import ReviewCard from '../../components/ReviewCard';
-import PortfolioUpload from '../../components/PortfolioUpload';
-import { useAuth } from '../../lib/auth';
+import ReviewCard from '../../../components/ReviewCard';
+import PortfolioUpload from '../../../components/PortfolioUpload';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProviderProfile({ params }) {
   const { id } = params;

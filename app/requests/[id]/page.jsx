@@ -1,7 +1,7 @@
 'use client';
-import api from '../../lib/api';
-import QuoteCard from '../../components/QuoteCard';
-import PaymentForm from '../../components/PaymentForm';
+// import api from '../../../../lib/api';
+import QuoteCard from '../../../components/QuoteCard';
+// import PaymentForm from '../../../components/PaymentForm';
 
 export default function RequestPage({ params }) {
   const { id } = params;
@@ -26,7 +26,7 @@ export default function RequestPage({ params }) {
       {request.status === 'quote_accepted' && (
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Payment</h2>
-          <PaymentForm quoteId={request.acceptedQuote} />
+          {/* <PaymentForm quoteId={request.acceptedQuote} /> */}
         </div>
       )}
     </div>

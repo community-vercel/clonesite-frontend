@@ -1,6 +1,6 @@
 'use client';
 import { useForm } from 'react-hook-form';
-import api from '../../lib/api';
+import api from '../../../../lib/api';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 

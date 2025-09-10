@@ -27,6 +27,8 @@ export default function CreateService() {
   const [imageFiles, setImageFiles] = useState([]);
   const router = useRouter();
 
+
+  
   const { 
     register, 
     handleSubmit, 

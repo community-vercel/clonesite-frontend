@@ -1,6 +1,6 @@
  
 'use client';
-import api from '../../lib/api';
+// import api from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 import Link from 'next/link';
 import Image from 'next/image';
