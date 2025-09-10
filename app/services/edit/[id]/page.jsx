@@ -3,15 +3,15 @@ import { useForm } from 'react-hook-form';
 import api from '../../lib/api';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { useQuery } from 'react-query';
 
 export default function EditService() {
   const { id } = useParams();
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   const router = useRouter();
-  const { data: categories } = useQuery('categories', () =>
-    api.get('/categories').then((res) => res.data.data)
-  );
+  const { data: categories } = []
+  // useQuery('categories', () =>
+  //   api.get('/categories').then((res) => res.data.data)
+  // );
   const { data: service, isLoading } = useQuery(['service', id], () =>
     api.get(`/services/${id}`).then((res) => res.data.data)
   );

@@ -1,5 +1,4 @@
 'use client';
-import { useQuery } from 'react-query';
 import api from '../../lib/api';
 import Image from 'next/image';
 import ReviewCard from '../../components/ReviewCard';
@@ -9,9 +8,10 @@ import { useAuth } from '../../lib/auth';
 export default function ProviderProfile({ params }) {
   const { id } = params;
   const { user } = useAuth();
-  const { data: provider, isLoading } = useQuery(['provider', id], () =>
-    api.get(`/users/${id}`).then((res) => res.data.data)
-  );
+  const { data: provider, isLoading } = []
+  // useQuery(['provider', id], () =>
+  //   api.get(`/users/${id}`).then((res) => res.data.data)
+  // );
 
   if (isLoading) return <p className="text-center py-12">Loading...</p>;
 

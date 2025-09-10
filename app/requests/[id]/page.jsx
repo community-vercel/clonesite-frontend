@@ -1,14 +1,14 @@
 'use client';
-import { useQuery } from 'react-query';
 import api from '../../lib/api';
 import QuoteCard from '../../components/QuoteCard';
 import PaymentForm from '../../components/PaymentForm';
 
 export default function RequestPage({ params }) {
   const { id } = params;
-  const { data: request, isLoading } = useQuery(['request', id], () =>
-    api.get(`/requests/${id}`).then((res) => res.data.data)
-  );
+  const { data: request, isLoading } =[]
+  //  useQuery(['request', id], () =>
+  //   api.get(`/requests/${id}`).then((res) => res.data.data)
+  // );
 
   if (isLoading) return <p className="text-center py-12">Loading...</p>;
 

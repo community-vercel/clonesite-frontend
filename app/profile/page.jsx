@@ -1,6 +1,5 @@
  
 'use client';
-import { useQuery } from 'react-query';
 import api from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 import Link from 'next/link';
@@ -11,9 +10,10 @@ import ReviewCard from '../../components/ReviewCard';
 
 export default function ProfilePage() {
   const { user } = useAuth();
-  const { data: profile, isLoading } = useQuery('profile', () =>
-    api.get('/users/profile').then((res) => res.data.data)
-  );
+  const { data: profile, isLoading } =[]
+  //  useQuery('profile', () =>
+  //   api.get('/users/profile').then((res) => res.data.data)
+  // );
 
   if (isLoading) return <p className="text-center py-12">Loading...</p>;
 

@@ -1,16 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from 'react-query';
 import api from '../lib/api';
 
 export default function FilterBar() {
   const [filters, setFilters] = useState({ category: '', location: '', price: '' });
   const router = useRouter();
-  const { data: categories } = useQuery('categories', () =>
-    api.get('/categories').then((res) => res.data.data)
-  );
-
+  const { data: categories } = []
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
