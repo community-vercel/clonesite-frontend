@@ -8,6 +8,7 @@
       "start": "next start",
     "lint": "eslint"
   },
+  
   "dependencies": {
     "@headlessui/react": "^2.2.7",
     "@heroicons/react": "^2.2.0",
