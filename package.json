@@ -1,14 +1,14 @@
 {
   "name": "clone-frontend",
   "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-  "build": "next build --no-turbo",
-      "start": "next start",
-    "lint": "eslint"
-  },
-  
+  "private": true,"scripts": {
+  "dev": "next dev --turbopack",  
+  "build": "next build",
+  "start": "next start",            
+  "lint": "eslint"                 
+}
+,
+
   "dependencies": {
     "@headlessui/react": "^2.2.7",
     "@heroicons/react": "^2.2.0",
