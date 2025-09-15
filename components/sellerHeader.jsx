@@ -26,6 +26,8 @@ const SellerHeader = () => {
           </Link>
         </div>
 
+
+
         {/* Navigation Links */}
         <nav className="flex space-x-6">
           <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 font-medium">Dashboard</Link>
