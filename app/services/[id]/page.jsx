@@ -1,10 +1,10 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import { servicesAPI } from '../../../lib/api'
-import Header from '../../../components/layout/Header'
-import Footer from '../../../components/layout/Footer'
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { servicesAPI } from '../../../lib/api';
+import Header from '../../../components/layout/Header';
+import Footer from '../../../components/layout/Footer';
 import { 
   Star, 
   MapPin, 
@@ -20,69 +20,88 @@ import {
   User,
   Calendar,
   Award
-} from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function ServiceDetailPage() {
-  const { id } = useParams()
-  const [service, setService] = useState(null)
-  const [reviews, setReviews] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
-  const [showContactModal, setShowContactModal] = useState(false)
+  const { id } = useParams();
+  const [service, setService] = useState(null);
+  const [relatedServices, setRelatedServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [requestData, setRequestData] = useState({
+    name: '',
+    email: '',
+    message: '',
+    preferredContact: 'Email',
+  });
 
   useEffect(() => {
     if (id) {
-      fetchServiceDetails()
-      fetchReviews()
+      fetchServiceDetails();
     }
-  }, [id])
+  }, [id]);
 
   const fetchServiceDetails = async () => {
     try {
-      const response = await servicesAPI.getService(id)
+      const response = await servicesAPI.getService(id);
       if (response.success) {
-        setService(response.data)
+        setService(response.data.service);
+        setRelatedServices(response.data.relatedServices || []);
       }
     } catch (error) {
-      console.error('Failed to fetch service details:', error)
+      console.error('Failed to fetch service details:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
-  const fetchReviews = async () => {
-    try {
-      const response = await reviewsAPI.getByService(id)
-      if (response.success) {
-        setReviews(response.data || [])
-      }
-    } catch (error) {
-      console.error('Failed to fetch reviews:', error)
-    }
-  }
+  };
 
   const nextImage = () => {
-    if (service?.images) {
+    if (service?.images && service.images.length > 0) {
       setCurrentImageIndex((prev) => 
         prev === service.images.length - 1 ? 0 : prev + 1
-      )
+      );
     }
-  }
+  };
 
   const prevImage = () => {
-    if (service?.images) {
+    if (service?.images && service.images.length > 0) {
       setCurrentImageIndex((prev) => 
         prev === 0 ? service.images.length - 1 : prev - 1
-      )
+      );
     }
-  }
+  };
+
+  const handleRequestChange = (e) => {
+    const { name, value } = e.target;
+    setRequestData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleRequestSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await servicesAPI.requestService(id, {
+        ...requestData,
+        serviceId: id,
+        serviceTitle: service.title,
+      });
+      if (response.success) {
+        alert('Service request submitted successfully!');
+        setShowContactModal(false);
+        setRequestData({ name: '', email: '', message: '', preferredContact: 'Email' });
+      }
+    } catch (error) {
+      console.error('Failed to submit service request:', error);
+      alert('Failed to submit request. Please try again.');
+    }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
+     
         <div className="flex-1 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="animate-pulse">
@@ -104,29 +123,68 @@ export default function ServiceDetailPage() {
         </div>
         <Footer />
       </div>
-    )
+    );
   }
 
   if (!service) {
     return (
       <div className="min-h-screen flex flex-col">
-        <Header />
+    
         <div className="flex-1 bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Service not found</h2>
-            <Link href="/services" className="btn-primary">
+            <Link href="/services" className="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors">
               Browse Services
             </Link>
           </div>
         </div>
         <Footer />
       </div>
-    )
+    );
   }
+
+  const {
+    title,
+    shortDescription,
+    description,
+    images = [],
+    primaryImage,
+    provider,
+    category,
+    serviceAreas = [],
+    rating,
+    priceDisplay,
+    responseTime,
+    availability,
+    tags = [],
+    faqs = [],
+    features = [],
+    whatsIncluded = [],
+    whatsNotIncluded = [],
+    requirements = [],
+    cancellationPolicy,
+    serviceHistory,
+    createdAt,
+    updatedAt,
+  } = service;
+
+  const isAvailableNow = availability?.schedule?.monday?.available && availability?.schedule?.monday?.hours.some(
+    (hour) => {
+      const [startHour, startMinute] = hour.start.split(':').map(Number);
+      const [endHour, endMinute] = hour.end.split(':').map(Number);
+      const now = new Date();
+      now.setHours(16, 24, 0, 0); // 09:24 PM PKT is 16:24 UTC
+      const start = new Date(now);
+      start.setHours(startHour, startMinute, 0, 0);
+      const end = new Date(now);
+      end.setHours(endHour, endMinute, 0, 0);
+      return now >= start && now <= end;
+    }
+  );
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header />
+  
       
       <div className="flex-1 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -137,27 +195,25 @@ export default function ServiceDetailPage() {
               <span>/</span>
               <Link href="/services" className="hover:text-primary-600">Services</Link>
               <span>/</span>
-              <Link href={`/services?category=${service.category?.name}`} className="hover:text-primary-600">
-                {service.category?.name}
+              <Link href={`/services?category=${category?.name}`} className="hover:text-primary-600">
+                {category?.name}
               </Link>
               <span>/</span>
-              <span className="text-gray-900">{service.title}</span>
+              <span className="text-gray-900">{title}</span>
             </div>
           </nav>
 
           {/* Image Gallery */}
           <div className="relative mb-8">
             <div className="relative h-96 rounded-xl overflow-hidden bg-gray-200">
-              {service.images && service.images.length > 0 ? (
+              {(images.length > 0 || primaryImage) ? (
                 <>
-                  <Image
-                    src={service.images[currentImageIndex]}
-                    alt={service.title}
-                    fill
+                  <img
+                    src={images[currentImageIndex]?.url || primaryImage}
+                    alt={title}
                     className="object-cover"
                   />
-                  
-                  {service.images.length > 1 && (
+                  {(images.length > 1 || (primaryImage && images.length > 0)) && (
                     <>
                       <button
                         onClick={prevImage}
@@ -171,9 +227,8 @@ export default function ServiceDetailPage() {
                       >
                         <ChevronRight size={20} />
                       </button>
-                      
                       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                        {service.images.map((_, index) => (
+                        {(images.length > 0 ? images : [primaryImage]).map((_, index) => (
                           <button
                             key={index}
                             onClick={() => setCurrentImageIndex(index)}
@@ -190,7 +245,7 @@ export default function ServiceDetailPage() {
                 <div className="flex items-center justify-center h-full text-gray-400">
                   <Image 
                     src="/api/placeholder/400/300" 
-                    alt={service.title}
+                    alt={title}
                     fill
                     className="object-cover"
                   />
@@ -219,27 +274,27 @@ export default function ServiceDetailPage() {
               <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 mb-8">
                 <div className="flex items-start justify-between mb-6">
                   <div className="flex-1">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{service.title}</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">{title}</h1>
                     <div className="flex items-center space-x-4 mb-4">
-                      {service.provider && (
+                      {provider && (
                         <div className="flex items-center">
                           <img
-                            src={service.provider.avatar || '/api/placeholder/40/40'}
-                            alt={service.provider.name}
+                         src={ "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" ||provider?.avatar }
+  alt={provider?.businessName || provider?.firstName || "User"}
                             className="w-10 h-10 rounded-full mr-3"
                           />
-                          <div>
+                       <div>
                             <h3 className="font-semibold text-gray-900 flex items-center">
-                              {service.provider.name}
-                              {service.provider.verified && (
+                              {provider.businessName || `${provider.firstName} ${provider.lastName}`}
+                              {provider.isVerified && (
                                 <Verified size={16} className="ml-2 text-primary-600" />
                               )}
                             </h3>
-                            {service.provider.rating && (
+                            {provider.rating?.average && (
                               <div className="flex items-center">
                                 <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
                                 <span className="text-sm text-gray-600">
-                                  {service.provider.rating} ({service.provider.reviewCount} reviews)
+                                  {provider.rating.average} ({provider.rating.count} reviews)
                                 </span>
                               </div>
                             )}
@@ -249,23 +304,23 @@ export default function ServiceDetailPage() {
                     </div>
                     
                     <div className="flex items-center space-x-6 text-sm text-gray-600">
-                      {service.location && (
+                      {serviceAreas.length > 0 && (
                         <div className="flex items-center">
                           <MapPin size={16} className="mr-1" />
-                          {service.location.city}
+                          {serviceAreas[0].city}
                         </div>
                       )}
                       
-                      {service.availability && (
+                      {availability && (
                         <div className="flex items-center">
                           <Clock size={16} className="mr-1" />
-                          Available {service.availability === 'immediate' ? 'now' : service.availability}
+                          Available {isAvailableNow ? 'now' : `${availability.leadTime} hours lead time`}
                         </div>
                       )}
                     </div>
                   </div>
                   
-                  {service.verified && (
+                  {provider?.isVerified && (
                     <div className="bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-medium flex items-center">
                       <Verified size={16} className="mr-2" />
                       Verified Service
@@ -274,30 +329,65 @@ export default function ServiceDetailPage() {
                 </div>
 
                 {/* Price */}
-                <div className="border-t border-gray-200 pt-6">
-                  <div className="text-3xl font-bold text-primary-600">
-                    {service.price ? (
-                      service.price.min === service.price.max ? 
-                        `£${service.price.min}/${service.price.unit}` :
-                        `From £${service.price.min}/${service.price.unit}`
-                    ) : 'Contact for pricing'}
-                  </div>
-                </div>
+             <div className="border-t border-gray-200 pt-6 mt-6">
+  <div className="bg-gray-50 rounded-xl p-4 shadow-sm">
+    <p className="text-sm font-medium text-gray-500 mb-1">Price Range</p>
+    <div className="text-3xl font-bold text-primary-600 tracking-tight">
+      {priceDisplay || `$${pricing.amount.min} - $${pricing.amount.max}`}
+    </div>  </div>
+</div>
+
               </div>
 
               {/* Description */}
               <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 mb-8">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Service</h2>
                 <div className="prose prose-lg max-w-none text-gray-700">
-                  <p>{service.description}</p>
+                  <p>{shortDescription || description}</p>
                 </div>
 
+                {/* Features */}
+                {features.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-semibold text-gray-900 mb-3">Key Features</h3>
+                    <ul className="list-disc list-inside text-gray-600">
+                      {features.map((feature, index) => (
+                        <li key={index}>{feature}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* What's Included */}
+                {whatsIncluded.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-semibold text-gray-900 mb-3">What's Included</h3>
+                    <ul className="list-disc list-inside text-gray-600">
+                      {whatsIncluded.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Requirements */}
+                {requirements.length > 0 && (
+                  <div className="mt-6">
+                    <h3 className="font-semibold text-gray-900 mb-3">Requirements</h3>
+                    <ul className="list-disc list-inside text-gray-600">
+                      {requirements.map((req, index) => (
+                        <li key={index}>{req}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {/* Tags */}
-                {service.tags && service.tags.length > 0 && (
+                {tags.length > 0 && (
                   <div className="mt-6">
                     <h3 className="font-semibold text-gray-900 mb-3">Service Tags</h3>
                     <div className="flex flex-wrap gap-2">
-                      {service.tags.map((tag, index) => (
+                      {tags.map((tag, index) => (
                         <span
                           key={index}
                           className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium"
@@ -310,22 +400,37 @@ export default function ServiceDetailPage() {
                 )}
               </div>
 
+              {/* FAQs */}
+              {faqs.length > 0 && (
+                <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                  <div className="space-y-4">
+                    {faqs.map((faq, index) => (
+                      <div key={index}>
+                        <h3 className="font-semibold text-gray-900">{faq.question}</h3>
+                        <p className="text-gray-600 mt-1">{faq.answer}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Reviews */}
               <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">Reviews</h2>
-                  {service.provider?.rating && (
+                  {rating?.average && (
                     <div className="flex items-center">
                       <Star className="w-5 h-5 text-yellow-400 fill-current mr-1" />
-                      <span className="text-lg font-semibold">{service.provider.rating}</span>
+                      <span className="text-lg font-semibold">{rating.average}</span>
                       <span className="text-gray-600 ml-1">
-                        ({service.provider.reviewCount} reviews)
+                        ({rating.count} reviews)
                       </span>
                     </div>
                   )}
                 </div>
 
-                {reviews.length === 0 ? (
+                {service.reviews?.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <Star className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                     <p className="font-medium">No reviews yet</p>
@@ -333,7 +438,7 @@ export default function ServiceDetailPage() {
                   </div>
                 ) : (
                   <div className="space-y-6">
-                    {reviews.map((review, index) => (
+                    {service.reviews.map((review, index) => (
                       <div key={index} className="border-b border-gray-200 last:border-0 pb-6 last:pb-0">
                         <div className="flex items-start">
                           <img
@@ -377,39 +482,28 @@ export default function ServiceDetailPage() {
             <div className="lg:col-span-1">
               <div className="sticky top-24">
                 {/* Contact Card */}
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
+                {/* <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mb-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">Get a Quote</h3>
                   <p className="text-gray-600 mb-6">
-                    Contact {service.provider?.name} for a personalized quote
+                    Contact {provider?.businessName || `${provider?.firstName} ${provider?.lastName}`} for a personalized quote
                   </p>
                   
                   <div className="space-y-3">
                     <button
                       onClick={() => setShowContactModal(true)}
-                      className="w-full btn-primary"
+                      className="w-full bg-gray-200 text-gray-900 py-3 rounded-lg hover:bg-gray-300 transition-colors flex items-center justify-center"
                     >
-                      Request Quote
+                    Post a Request
                     </button>
                     
-                    <button className="w-full btn-secondary">
-                      <Phone size={20} className="mr-2" />
-                      Call Now
-                    </button>
-                    
-                    <button className="w-full btn-secondary">
-                      <Mail size={20} className="mr-2" />
-                      Send Message
-                    </button>
+                  
                   </div>
 
-                  <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-                    <p className="text-sm text-gray-600 mb-2">Response time</p>
-                    <p className="font-semibold text-gray-900">Usually within 2 hours</p>
-                  </div>
-                </div>
+                
+                </div> */}
 
                 {/* Provider Info */}
-                {service.provider && (
+                {provider && (
                   <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                     <h3 className="text-xl font-bold text-gray-900 mb-4">About the Provider</h3>
                     
@@ -418,7 +512,9 @@ export default function ServiceDetailPage() {
                         <User className="w-5 h-5 text-gray-400 mr-3" />
                         <div>
                           <p className="font-medium text-gray-900">Member since</p>
-                          <p className="text-sm text-gray-600">January 2023</p>
+                          <p className="text-sm text-gray-600">
+                            {new Date(createdAt).getFullYear()}
+                          </p>
                         </div>
                       </div>
                       
@@ -426,7 +522,9 @@ export default function ServiceDetailPage() {
                         <Award className="w-5 h-5 text-gray-400 mr-3" />
                         <div>
                           <p className="font-medium text-gray-900">Services completed</p>
-                          <p className="text-sm text-gray-600">127 projects</p>
+                          <p className="text-sm text-gray-600">
+                            {serviceHistory?.completedJobs || '0'} projects
+                          </p>
                         </div>
                       </div>
                       
@@ -434,17 +532,44 @@ export default function ServiceDetailPage() {
                         <Calendar className="w-5 h-5 text-gray-400 mr-3" />
                         <div>
                           <p className="font-medium text-gray-900">Last active</p>
-                          <p className="text-sm text-gray-600">2 hours ago</p>
+                          <p className="text-sm text-gray-600">
+                            {new Date(updatedAt).toLocaleTimeString('en-US', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true,
+                            })}{' '}
+                            today
+                          </p>
                         </div>
                       </div>
                     </div>
 
                     <Link
-                      href={`/providers/${service.provider._id}`}
-                      className="block w-full mt-6 btn-secondary text-center"
+                      href={`/providers/${provider._id}`}
+                      className="block w-full mt-6 bg-gray-200 text-gray-900 py-3 rounded-lg hover:bg-gray-300 transition-colors text-center"
                     >
                       View Profile
                     </Link>
+                  </div>
+                )}
+
+                {/* Related Services */}
+                {relatedServices.length > 0 && (
+                  <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 mt-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Related Services</h3>
+                    <div className="space-y-4">
+                      {relatedServices.map((relatedService) => (
+                        <Link
+                          key={relatedService._id}
+                          href={`/services/${relatedService._id}`}
+                          className="block hover:bg-gray-50 p-3 rounded-lg transition-colors"
+                        >
+                          <h4 className="font-semibold text-gray-900">{relatedService.title}</h4>
+                          <p className="text-sm text-gray-600">{relatedService.serviceAreas[0].city}</p>
+                          <p className="text-sm text-gray-600">{relatedService.priceDisplay}</p>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -457,20 +582,54 @@ export default function ServiceDetailPage() {
       {showContactModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Request a Quote</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Request Service: {title}</h3>
             <p className="text-gray-600 mb-6">
-              Get a personalized quote from {service.provider?.name}
+              Submit your request to {provider?.businessName || `${provider?.firstName} ${provider?.lastName}`} for {title}.
             </p>
             
-            <form className="space-y-4">
+            <form onSubmit={handleRequestSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Your Message
+                  Your Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={requestData.name}
+                  onChange={handleRequestChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={requestData.email}
+                  onChange={handleRequestChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Message
                 </label>
                 <textarea
+                  name="message"
+                  value={requestData.message}
+                  onChange={handleRequestChange}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  placeholder="Describe your project requirements..."
+                  placeholder="Describe your requirements or questions..."
+                  required
                 />
               </div>
               
@@ -478,7 +637,12 @@ export default function ServiceDetailPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Preferred Contact Method
                 </label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <select
+                  name="preferredContact"
+                  value={requestData.preferredContact}
+                  onChange={handleRequestChange}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
                   <option>Email</option>
                   <option>Phone</option>
                   <option>Text Message</option>
@@ -489,13 +653,13 @@ export default function ServiceDetailPage() {
                 <button
                   type="button"
                   onClick={() => setShowContactModal(false)}
-                  className="flex-1 btn-secondary"
+                  className="flex-1 bg-gray-200 text-gray-900 py-3 rounded-lg hover:bg-gray-300 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 btn-primary"
+                  className="flex-1 bg-primary-600 text-white py-3 rounded-lg hover:bg-primary-700 transition-colors"
                 >
                   Send Request
                 </button>
@@ -507,5 +671,5 @@ export default function ServiceDetailPage() {
       
       <Footer />
     </div>
-  )
+  );
 }

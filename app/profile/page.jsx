@@ -1,7 +1,7 @@
  
 'use client';
 // import api from '../../lib/api';
-import { useAuth } from '../../lib/auth';
+import { useAuth } from '../../app/context/AuthContext';
 import Link from 'next/link';
 import Image from 'next/image';
 import { StarIcon } from '@heroicons/react/solid';

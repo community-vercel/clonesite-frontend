@@ -5,140 +5,40 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { StarIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/solid';
-import { servicesAPI } from '@/lib/api';
+import api from '../../lib/api'
 
 export default function FeaturedServices() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Mock data for demonstration (replace with actual API call)
-  const mockServices = [
-    {
-      _id: '1',
-      title: 'Professional Home Cleaning Service',
-      description: 'Deep cleaning service for residential properties. Eco-friendly products and experienced team.',
-      images: ['/api/placeholder/400/300'],
-      pricing: { type: 'hourly', amount: 35 },
-      provider: {
-        name: 'Sarah Johnson',
-        avatar: '/api/placeholder/100/100',
-        rating: 4.9,
-        reviewCount: 127
-      },
-      location: { city: 'New York', state: 'NY' },
-      category: 'Home & Garden',
-      responseTime: '< 1 hour',
-      featured: true
-    },
-    {
-      _id: '2',
-      title: 'Custom Web Development',
-      description: 'Full-stack web development with modern technologies. From concept to deployment.',
-      images: ['/api/placeholder/400/300'],
-      pricing: { type: 'project', amount: 2500 },
-      provider: {
-        name: 'Mike Chen',
-        avatar: '/api/placeholder/100/100',
-        rating: 5.0,
-        reviewCount: 89
-      },
-      location: { city: 'San Francisco', state: 'CA' },
-      category: 'Technology',
-      responseTime: '< 2 hours',
-      featured: true
-    },
-    {
-      _id: '3',
-      title: 'Personal Fitness Training',
-      description: 'One-on-one fitness coaching with personalized workout plans and nutrition guidance.',
-      images: ['/api/placeholder/400/300'],
-      pricing: { type: 'session', amount: 75 },
-      provider: {
-        name: 'David Rodriguez',
-        avatar: '/api/placeholder/100/100',
-        rating: 4.8,
-        reviewCount: 203
-      },
-      location: { city: 'Miami', state: 'FL' },
-      category: 'Health & Wellness',
-      responseTime: '< 30 minutes',
-      featured: true
-    },
-    {
-      _id: '4',
-      title: 'Professional Moving Service',
-      description: 'Complete moving solutions for residential and commercial relocations. Insured and licensed.',
-      images: ['/api/placeholder/400/300'],
-      pricing: { type: 'hourly', amount: 95 },
-      provider: {
-        name: 'Elite Movers Co.',
-        avatar: '/api/placeholder/100/100',
-        rating: 4.7,
-        reviewCount: 156
-      },
-      location: { city: 'Chicago', state: 'IL' },
-      category: 'Moving & Delivery',
-      responseTime: '< 1 hour',
-      featured: true
-    },
-    {
-      _id: '5',
-      title: 'Wedding Photography',
-      description: 'Capture your special day with professional wedding photography. Includes engagement session.',
-      images: ['/api/placeholder/400/300'],
-      pricing: { type: 'package', amount: 1800 },
-      provider: {
-        name: 'Emma Thompson',
-        avatar: '/api/placeholder/100/100',
-        rating: 4.9,
-        reviewCount: 74
-      },
-      location: { city: 'Austin', state: 'TX' },
-      category: 'Photography',
-      responseTime: '< 4 hours',
-      featured: true
-    },
-    {
-      _id: '6',
-      title: 'Plumbing Repair & Installation',
-      description: '24/7 emergency plumbing services. Licensed and insured with upfront pricing.',
-      images: ['/api/placeholder/400/300'],
-      pricing: { type: 'service', amount: 125 },
-      provider: {
-        name: 'Pro Plumbers Inc.',
-        avatar: '/api/placeholder/100/100',
-        rating: 4.6,
-        reviewCount: 298
-      },
-      location: { city: 'Phoenix', state: 'AZ' },
-      category: 'Handyman',
-      responseTime: '< 30 minutes',
-      featured: true
-    }
-  ];
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Replace with actual API call
-    setTimeout(() => {
-      setServices(mockServices);
-      setLoading(false);
-    }, 1000);
+    const fetchServices = async () => {
+      try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const response = await api.get('/services/featured');
+
+        if (response.data.success) {
+          setServices(response.data.data.services || []);
+        } else {
+          setError(response.data.message || 'Failed to load featured services');
+        }
+      } catch (err) {
+        setError(err.response?.data?.message || 'An error occurred while fetching services');
+        console.error('Error fetching services:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
   }, []);
 
-  const getPriceDisplay = (pricing) => {
-    const { type, amount } = pricing;
-    switch (type) {
-      case 'hourly':
-        return `$${amount}/hr`;
-      case 'project':
-        return `$${amount.toLocaleString()}`;
-      case 'session':
-        return `$${amount}/session`;
-      case 'package':
-        return `$${amount.toLocaleString()} package`;
-      default:
-        return `Starting at $${amount}`;
-    }
+  // Use priceDisplay from API if available, fallback to computed pricing
+  const getPriceDisplay = (service) => {
+    return service.priceDisplay || (service.pricing?.amount?.min && service.pricing?.amount?.max
+      ? `$${service.pricing.amount.min} - $${service.pricing.amount.max}`
+      : 'Contact for pricing');
   };
 
   if (loading) {
@@ -158,12 +58,33 @@ export default function FeaturedServices() {
     );
   }
 
+  if (error) {
+    return (
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Services</h2>
+          </div>
+          <div className="text-center py-12">
+            <p className="text-red-600 font-medium">{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <motion.h2 
+          <motion.h2
             className="text-4xl font-bold text-gray-900 mb-4"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -172,15 +93,15 @@ export default function FeaturedServices() {
           >
             Featured Services
           </motion.h2>
-          <motion.p 
+          <motion.p
             className="text-xl text-gray-600 max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            Discover top-rated professionals ready to help with your next project.
-            Quality guaranteed, trusted by thousands.
+            Discover top-rated professionals ready to help with your next project. Quality guaranteed,
+            trusted by thousands.
           </motion.p>
         </div>
 
@@ -206,17 +127,25 @@ export default function FeaturedServices() {
                     </div>
                     <div className="absolute top-4 right-4 z-20">
                       <span className="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1 rounded-full text-sm font-semibold">
-                        {getPriceDisplay(service.pricing)}
+                        {getPriceDisplay(service)}
                       </span>
                     </div>
-                    <div className="h-full w-full bg-gradient-to-br from-purple-400 to-blue-500 group-hover:scale-105 transition-transform duration-300" />
+                    {service.primaryImage ? (
+                    <img
+  src={service.primaryImage || "/default-avatar.jpg"}
+  alt={service.title || "Default Avatar"}
+  className="object-cover group-hover:scale-105 transition-transform duration-300"
+/>
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-purple-400 to-blue-500 group-hover:scale-105 transition-transform duration-300" />
+                    )}
                   </div>
 
                   {/* Content */}
                   <div className="p-6">
                     {/* Category */}
                     <div className="text-xs font-medium text-purple-600 mb-2 uppercase tracking-wide">
-                      {service.category}
+                      {service.category.name}
                     </div>
 
                     {/* Title */}
@@ -226,19 +155,35 @@ export default function FeaturedServices() {
 
                     {/* Description */}
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {service.description}
+                      {service.shortDescription || service.description}
                     </p>
 
                     {/* Provider Info */}
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-3">
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-400 to-blue-500" />
+                        <div className="h-8 w-8 rounded-full overflow-hidden bg-gray-200">
+                          {service.provider.avatar ? (
+                           <img
+  src={ "https://mdbcdn.b-cdn.net/img/new/avatars/2.webp" ||service?.provider?.avatar }
+  alt={service?.provider?.businessName || service?.provider?.firstName || "User"}
+  width={32}
+  height={32}
+  className="object-cover"
+/>
+
+                          ) : (
+                            <div className="h-full w-full bg-gradient-to-r from-purple-400 to-blue-500" />
+                          )}
+                        </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{service.provider.name}</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {service.provider.businessName || `${service.provider.firstName} ${service.provider.lastName}`}
+                          </p>
                           <div className="flex items-center space-x-1">
                             <StarIcon className="h-3 w-3 text-yellow-400" />
                             <span className="text-xs text-gray-600">
-                              {service.provider.rating} ({service.provider.reviewCount})
+                              {service.provider.rating?.average || service.provider.rating || 0} (
+                              {service.rating?.count || service.provider.reviewCount || 0})
                             </span>
                           </div>
                         </div>
@@ -249,11 +194,19 @@ export default function FeaturedServices() {
                     <div className="flex items-center justify-between text-xs text-gray-500">
                       <div className="flex items-center space-x-1">
                         <MapPinIcon className="h-3 w-3" />
-                        <span>{service.location.city}, {service.location.state}</span>
+                        <span>
+                          {service.serviceAreas?.[0]?.city || service.location?.city},{' '}
+                          {service.serviceAreas?.[0]?.state || service.location?.state}
+                        </span>
                       </div>
                       <div className="flex items-center space-x-1">
                         <ClockIcon className="h-3 w-3" />
-                        <span>Responds {service.responseTime}</span>
+                        <span>
+                          Responds{' '}
+                          {service.responseTime?.average
+                            ? `< ${service.responseTime.target || 'N/A'} hours`
+                            : 'N/A'}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -264,14 +217,17 @@ export default function FeaturedServices() {
         </div>
 
         {/* View All Button */}
-        <motion.div 
+        <motion.div
           className="text-center mt-12"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
         >
-          <Link href="/services" className="btn-primary text-lg px-8 py-4">
+          <Link
+            href="/services"
+            className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors text-lg font-semibold"
+          >
             Browse All Services
           </Link>
         </motion.div>

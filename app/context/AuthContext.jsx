@@ -90,7 +90,7 @@ const checkAuth = async () => {
       setUser(null);
       setLoading(false);
       setInitialized(true);
-      router.replace('/auth/login');
+      // router.replace('/auth/login');
       return;
     }
 
@@ -202,7 +202,7 @@ const checkAuth = async () => {
     setUser(null);
     setLoading(false);
     setInitialized(true);
-    router.replace('/auth/login');
+    // router.replace('/auth/login');
   } finally {
     setLoading(false);
     setInitialized(true);
@@ -229,6 +229,35 @@ const checkAuth = async () => {
       console.log('Login successful, user set:', user);
       toast.success('Login successful!');
       router.push('/dashboard');
+      return { success: true, user };
+    } catch (error) {
+      const message = error.response?.data?.message || error.message || 'Login failed';
+      console.error('Login error:', message);
+      toast.error(message);
+      return { success: false, error: message };
+    }
+  };
+  const logins = async (credentials) => {
+    try {
+      console.log('Attempting login with:', credentials.email);
+      const response = await authAPI.login(credentials);
+      const { token, user, refreshToken } = response.data.data || response.data;
+
+      if (!token || !user || typeof user !== 'object') {
+        throw new Error('Invalid login response: missing or invalid token/user');
+      }
+
+      Cookies.set('token', token, { expires: 30, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+      Cookies.set('user', JSON.stringify(user), { expires: 30, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+      if (refreshToken) {
+        Cookies.set('refreshToken', refreshToken, { expires: 30, secure: process.env.NODE_ENV === 'production', sameSite: 'Strict' });
+      } else {
+        console.warn('No refresh token provided in login response');
+      }
+      setUser(user);
+      console.log('Login successful, user set:', user);
+      toast.success('Login successful!');
+   
       return { success: true, user };
     } catch (error) {
       const message = error.response?.data?.message || error.message || 'Login failed';
@@ -307,6 +336,7 @@ const checkAuth = async () => {
     user,
     loading,
     login,
+    logins,
     register,
     logout,
     updateUser,
