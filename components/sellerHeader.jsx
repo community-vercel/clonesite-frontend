@@ -26,9 +26,6 @@ const SellerHeader = () => {
           </Link>
         </div>
 
-
-
-        {/* Navigation Links */}
         <nav className="flex space-x-6">
           <Link href="/dashboard" className="text-gray-700 hover:text-gray-900 font-medium">Dashboard</Link>
           <Link href="/dashboard/leads" className="text-gray-700 hover:text-gray-900 font-medium">Leads</Link>
@@ -37,7 +34,6 @@ const SellerHeader = () => {
           <Link href="/help" className="text-gray-700 hover:text-gray-900 font-medium">Help</Link>
         </nav>
 
-        {/* User Profile/Help */}
         <div className="flex items-center space-x-4">
           <Link href="/help" className="text-gray-500 hover:text-gray-700">
             <HelpCircle className="w-6 h-6" />
