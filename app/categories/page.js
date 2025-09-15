@@ -727,7 +727,7 @@ const RequestModal = ({ isOpen, onClose, category }) => {
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h3 className="text-2xl font-bold text-gray-900">Describe your {category?.name} project</h3>
-              <p className="text-gray-600">The more details you provide, the better quotes you'll receive</p>
+              <p className="text-gray-600">The more details you provide, the better quotes you will receive</p>
             </div>
             <div className="space-y-4">
               {category?.subCategories?.length > 0 && (
@@ -897,7 +897,7 @@ const RequestModal = ({ isOpen, onClose, category }) => {
           <div className="space-y-6">
             <div className="text-center space-y-2">
               <h3 className="text-2xl font-bold text-gray-900">Where do you need this service?</h3>
-              <p className="text-gray-600">We'll find trusted professionals in your area</p>
+              <p className="text-gray-600">We will find trusted professionals in your area</p>
             </div>
             <div className="space-y-4">
               <div>
@@ -959,7 +959,7 @@ const RequestModal = ({ isOpen, onClose, category }) => {
             </div>
             <div className="bg-green-50 rounded-lg p-4 text-sm text-green-800">
               <h4 className="font-medium mb-2">Your privacy is protected</h4>
-              <p>Your exact address won't be shared until you choose a professional to work with.</p>
+              <p>Your exact address wont be shared until you choose a professional to work with.</p>
             </div>
           </div>
         );
@@ -1030,7 +1030,7 @@ const RequestModal = ({ isOpen, onClose, category }) => {
         return (
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-bold text-gray-900">What's your budget?</h3>
+              <h3 className="text-2xl font-bold text-gray-900">What is your budget?</h3>
               <p className="text-gray-600">This helps us find professionals in your price range</p>
             </div>
             <div className="space-y-3">

@@ -235,7 +235,7 @@ const LeadsPage = () => {
                 </div>
                 <div className="mt-3">
                   <p className="font-medium text-gray-900 mb-1">Covered by our Get Hired Guarantee</p>
-                  <p className="text-sm text-gray-600">If you're not hired during the starter pack, we'll return all the credits.</p>
+                  <p className="text-sm text-gray-600">If you are not hired during the starter pack, we will return all the credits.</p>
                 </div>
               </div>
 
