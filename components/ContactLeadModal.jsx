@@ -157,7 +157,7 @@ const ContactLeadModal = ({ isOpen, onClose, leadId, customerName }) => {
 
       console.log('Sending payload:', payload);
 
-      const response = await fetch('http://localhost:5000/api/payments/create-payment-intent', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments/create-payment-intent`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -235,7 +235,7 @@ const ContactLeadModal = ({ isOpen, onClose, leadId, customerName }) => {
           throw new Error('Authentication token not found');
         }
 
-        const response = await fetch('http://localhost:5000/api/payments/confirm-payment', {
+        const response = await fetch(`${procees.env.NEXT_PUBLIC_API_URL}/payments/confirm-payment`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,

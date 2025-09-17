@@ -5,13 +5,28 @@ import { useAuth } from '../../app/context/AuthContext';
 import { ChevronUp, ChevronDown, Play, Volume2, Maximize2, MapPin, Eye, Clock, CheckCircle, MessageSquare, Star } from 'lucide-react';
 import Link from 'next/link';
 import api from '../../lib/api'
+import { useRouter } from 'next/navigation';
+
 const Dashboard = () => {
-  const { user, loading } = useAuth();
   const [welcomeExpanded, setWelcomeExpanded] = useState(true);
   const [stats, setStats] = useState({});
   const [recentRequests, setRecentRequests] = useState([]);
   const [error, setError] = useState(null);
+const { login, isAuthenticated, loading,user } = useAuth();
+    const router = useRouter();
 
+    useEffect(() => {
+      if (!loading && isAuthenticated) {
+         if(user.userType==='service_provider'){
+        router.replace('/dashboard');
+  
+        }
+        else{
+              router.push('/');
+  
+        }
+      }
+    }, [isAuthenticated, loading, router]);
   // Use current date and time (05:47 PM PKT on Thursday, September 11, 2025)
   const currentDate = new Date();
   const formattedTime = currentDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -83,6 +98,10 @@ const Dashboard = () => {
         return <Clock className="w-5 h-5 text-gray-600" />;
     }
   };
+
+
+    if (user && user.userType!='service_provider') return null;
+
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">

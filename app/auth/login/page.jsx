@@ -9,13 +9,20 @@ import { EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 
 export default function LoginPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const { login, isAuthenticated, loading } = useAuth();
+  const { login, isAuthenticated, loading,user } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-
+console.log('user is',user)
   useEffect(() => {
     if (!loading && isAuthenticated) {
+       if(user.userType==='service_provider'){
       router.replace('/dashboard');
+
+      }
+      else{
+            router.push('/');
+
+      }
     }
   }, [isAuthenticated, loading, router]);
 
@@ -25,7 +32,7 @@ export default function LoginPage() {
       const result = await login(data);
       if (result.success) {
         toast.success('Logged in successfully!');
-        router.replace('/dashboard');
+        // router.replace('/dashboard');
       } else {
         toast.error(result.error);
       }

@@ -228,7 +228,15 @@ const checkAuth = async () => {
       setUser(user);
       console.log('Login successful, user set:', user);
       toast.success('Login successful!');
+      if(user.userType==='service_provider'){
       router.push('/dashboard');
+
+      }
+      else{
+            router.push('/');
+
+      }
+
       return { success: true, user };
     } catch (error) {
       const message = error.response?.data?.message || error.message || 'Login failed';
