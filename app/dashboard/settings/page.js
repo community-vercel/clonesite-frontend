@@ -29,7 +29,7 @@ export default function BarkSettings() {
 
   const apiCall = useCallback(async (endpoint, options = {}) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/users${endpoint}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -898,7 +898,7 @@ export default function BarkSettings() {
 
                 if (item.slug) {
                   return (
-                    <a href={`/${item.slug}`} key={index} className="block">
+                    <a href={`${item.slug}`} key={index} className="block">
                       {Content}
                     </a>
                   );

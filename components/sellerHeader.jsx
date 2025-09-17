@@ -233,7 +233,7 @@ export function SellerHeader() {
                         <span className="ml-auto bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full font-medium">12</span>
                       </Link>
                       <Link 
-                        href="/dashboard/my-responses" 
+                        href="/dashboard/response" 
                         className="flex items-center px-4 py-3 text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors duration-150 group"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
