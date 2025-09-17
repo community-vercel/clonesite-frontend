@@ -551,7 +551,7 @@ const RequestModal = ({ isOpen, onClose, category }) => {
   async function getCoordinatesFromPostcode(postcode) {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&format=json&limit=1`,
+`https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&countrycodes=pk&format=json&limit=1`,
         {
           headers: {
             'User-Agent': 'YourAppName/1.0 (your-contact-email@example.com)'

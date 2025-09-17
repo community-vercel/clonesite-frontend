@@ -476,29 +476,32 @@ const RequestModal = ({ isOpen, onClose, category }) => {
       return true;
     }
   };
-
-  async function getCoordinatesFromPostcode(postcode) {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&format=json&limit=1`,
-        {
-          headers: {
-            'User-Agent': 'YourAppName/1.0 (your-contact-email@example.com)'
-          }
+async function getCoordinatesFromPostcode(postcode, countryCode = 'pk') {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&countrycodes=${countryCode}&format=json&limit=1`,
+      {
+        headers: {
+          'User-Agent': 'YourAppName/1.0 (your-contact-email@example.com)'
         }
-      );
-      const data = await res.json();
-      if (data && data.length > 0) {
-        const { lon, lat } = data[0];
-        return [parseFloat(lon), parseFloat(lat)];
       }
-      return null;
-    } catch (err) {
-      console.error('Error fetching coordinates for postcode:', err);
-      setErrors(prev => ({ ...prev, submit: 'Unable to fetch coordinates for the provided postcode.' }));
-      return null;
+    );
+    const data = await res.json();
+    if (data && data.length > 0) {
+      const { lon, lat } = data[0];
+      return [parseFloat(lon), parseFloat(lat)];
     }
+    return null;
+  } catch (err) {
+    console.error('Error fetching coordinates for postcode:', err);
+    setErrors(prev => ({
+      ...prev,
+      submit: 'Unable to fetch coordinates for the provided postcode.'
+    }));
+    return null;
   }
+}
+
 
   async function getCityAndAddress(lat, lon) {
     try {
@@ -506,9 +509,10 @@ const RequestModal = ({ isOpen, onClose, category }) => {
         `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
       );
       const data = await res.json();
+      console.log("data")
       return {
         address: data.display_name,
-        city: data.address.city || data.address.town || data.address.village,
+        city: data.address.state || data.address.city || data.address.town || data.address.village,
         postcode: data.address.postcode
       };
     } catch (err) {

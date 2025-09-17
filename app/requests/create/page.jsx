@@ -362,7 +362,7 @@ export default function CreateRequest() {
   async function getCoordinatesFromPostcode(postcode) {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&format=json&limit=1`,
+`https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postcode)}&countrycodes=pk&format=json&limit=1`,
       {
         headers: {
           "User-Agent": "ServiceFinder/1.0 (contact@nameretailer.com)" // change to your app/email
