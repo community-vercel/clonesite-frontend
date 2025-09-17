@@ -844,14 +844,14 @@ export default function BarkSettings() {
               {[
                 {
                   title: 'My Profile',
-                  slug: '/dashbiard/profile',
+                  slug: '/dashboard/profile',
                   description:
                     'Your profile is key to attracting customers on Bark. Use it to explain what makes you different from your competition & why people should work with you',
                   link: true,
                 },
                 {
                   title: 'Reviews',
-                  slug: '/dashbiard/profile',
+                  slug: '/dashboard/profile',
                   description: 'All your reviews in one place',
                   link: true,
                 },
