@@ -374,7 +374,7 @@ export default function BarkSettings() {
                   <Shield className="w-5 h-5 text-orange-600" />
                 </div>
                 <div className="text-sm">
-                  <strong className="text-orange-800">Get Hired Guarantee</strong> - We're so confident you'll get hired at least once that if you don't, we'll return all the credits.
+                  <strong className="text-orange-800">Get Hired Guarantee</strong> - We are so confident you will get hired at least once that if you dont, we will return all the credits.
                 </div>
               </div>
             )}
@@ -456,7 +456,7 @@ export default function BarkSettings() {
             Coupon applied: {creditsData.appliedCoupon.percentOff}% off
           </p>
         )}
-        <p className="text-sm text-gray-500 mt-2">Coupons can't be combined. The higher discount applies.</p>
+        <p className="text-sm text-gray-500 mt-2">Coupons cant be combined. The higher discount applies.</p>
       </div>
     </div>
   );
@@ -623,7 +623,7 @@ export default function BarkSettings() {
           {/* Online/Remote Leads */}
           <div className="mb-8">
             <h3 className="font-semibold text-gray-900 mb-2">Online/remote leads</h3>
-            <p className="text-sm text-gray-600 mb-4">Customers tell us if they're happy to receive services online or remotely.</p>
+            <p className="text-sm text-gray-600 mb-4">Customers tell us if they re happy to receive services online or remotely.</p>
             
             <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
               <span className="text-gray-900">See online/remote leads</span>
@@ -695,7 +695,7 @@ export default function BarkSettings() {
           <Info className="w-5 h-5 text-blue-600 mr-3 mt-0.5" />
           <div className="text-sm text-blue-800">
             <p className="font-medium">Manage your account email, phone number, password and login details.</p>
-            <p>We'll use these details to contact you but won't share it with customers. You can control the email address and phone number that customers see for your business in <a href="#" className="underline">My Profile</a>.</p>
+            <p>We will use these details to contact you but wont share it with customers. You can control the email address and phone number that customers see for your business in <a href="#" className="underline">My Profile</a>.</p>
           </div>
         </div>
       </div>
@@ -703,7 +703,7 @@ export default function BarkSettings() {
       {/* Contact Details */}
       <div className="mb-8">
         <h3 className="font-semibold text-gray-900 mb-4">Contact details</h3>
-        <p className="text-sm text-gray-600 mb-6">These details are used for lead notifications, and to contact you about important account issues. Please ensure they're kept up-to-date.</p>
+        <p className="text-sm text-gray-600 mb-6">These details are used for lead notifications, and to contact you about important account issues. Please ensure they are kept up-to-date.</p>
         
         <div className="space-y-4">
           <div>
@@ -761,7 +761,7 @@ export default function BarkSettings() {
       {/* Change Password */}
       <div className="mb-8">
         <h3 className="font-semibold text-gray-900 mb-2">Change password</h3>
-        <p className="text-sm text-gray-600 mb-4">It's important to keep your password up-to-date.</p>
+        <p className="text-sm text-gray-600 mb-4">Its important to keep your password up-to-date.</p>
         
         <div className="space-y-4">
           <input
@@ -844,14 +844,14 @@ export default function BarkSettings() {
               {[
                 {
                   title: 'My Profile',
-                  slug: 'profile',
+                  slug: '/dashbiard/profile',
                   description:
                     'Your profile is key to attracting customers on Bark. Use it to explain what makes you different from your competition & why people should work with you',
                   link: true,
                 },
                 {
                   title: 'Reviews',
-                  slug: 'reviews',
+                  slug: '/dashbiard/profile',
                   description: 'All your reviews in one place',
                   link: true,
                 },
