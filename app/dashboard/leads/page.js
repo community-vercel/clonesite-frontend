@@ -24,6 +24,7 @@ const LeadsPage = () => {
   const [contactLeadId, setContactLeadId] = useState(null);
   const [contactCustomerName, setContactCustomerName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [contactedLeads, setContactedLeads] = useState(new Set()); // Added this missing state
 
   const token = document.cookie
     .split('; ')
@@ -509,35 +510,49 @@ const handleContact = async (leadId, customerName) => {
                   </div>
                 </div>
 
-                {/* Contact Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="bg-white bg-opacity-70 rounded-xl p-4">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
-            <Phone className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Phone Number</div>
-            <div className="font-bold text-gray-900">
-              {contactedLeads.has(selectedLeadData.id) ? selectedLeadData.customer.phone : 'Hidden - Contact to unlock'}
-            </div>
-          </div>
-        </div>
+                {/* Contact Information - Updated with masking */}
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {/* Phone Number */}
+  <div className="bg-white bg-opacity-70 rounded-xl p-4">
+    <div className="flex items-center space-x-3">
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-100">
+        <Phone className="w-5 h-5 text-blue-600" />
       </div>
-      <div className="bg-white bg-opacity-70 rounded-xl p-4">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100">
-            <Mail className="w-5 h-5 text-purple-600" />
-          </div>
-          <div>
-            <div className="text-sm text-gray-600">Email Address</div>
-            <div className="font-bold text-gray-900">
-              {contactedLeads.has(selectedLeadData.id) ? selectedLeadData.customer.email : 'Hidden - Contact to unlock'}
-            </div>
-          </div>
+      <div>
+        <div className="text-sm text-gray-600">Phone Number</div>
+        <div className="font-bold text-gray-900">
+          {selectedLeadData?.customer?.phone
+            ? selectedLeadData.customer.phone.replace(
+                /(\d{2})\d{5}(\d{2})/,
+                "$1*****$2"
+              )
+            : "N/A"}
         </div>
       </div>
     </div>
+  </div>
+
+  {/* Email Address */}
+  <div className="bg-white bg-opacity-70 rounded-xl p-4">
+    <div className="flex items-center space-x-3">
+      <div className="flex items-center justify-center w-10 h-10 rounded-full bg-purple-100">
+        <Mail className="w-5 h-5 text-purple-600" />
+      </div>
+      <div>
+        <div className="text-sm text-gray-600">Email Address</div>
+        <div className="font-bold text-gray-900">
+          {selectedLeadData?.customer?.email
+            ? selectedLeadData.customer.email.replace(
+                /(.{2})(.*)(@.*)/,
+                (_, a, b, c) => a + "*".repeat(b.length) + c
+              )
+            : "N/A"}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
               </div>
 
               {/* Enhanced Lead Cost & Action */}

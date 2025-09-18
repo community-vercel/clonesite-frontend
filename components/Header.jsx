@@ -1,10 +1,10 @@
-
-// Enhanced Header Component
+// Enhanced Header Component with Conditional Rendering
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useAuth } from '../app/context/AuthContext'
+import { SellerHeader } from './sellerHeader' // Import your SellerHeader component
 import { 
   Bell, 
   Menu, 
@@ -28,6 +28,11 @@ import {
 
 export function Header() {
   const { user, logout, isAuthenticated } = useAuth()
+ if (user?.userType === 'service_provider') {
+    return <SellerHeader />
+  }
+ 
+
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -486,5 +491,4 @@ export function Header() {
         />
       )}
     </>
-  )
-}
+  )}
