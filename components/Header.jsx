@@ -186,16 +186,15 @@ export function Header() {
                       className="flex items-center space-x-3 p-2 pl-3 pr-4 text-gray-700 hover:text-teal-700 hover:bg-teal-50 rounded-xl transition-all duration-200 border border-transparent hover:border-teal-200"
                     >
                       <div className="relative">
-                        <img
-                          src={user?.avatar || '/api/placeholder/36/36'}
-                          alt={user?.name || 'User avatar'}
-                          className="w-9 h-9 rounded-full object-cover ring-2 ring-gray-100 hover:ring-teal-200 transition-all duration-200"
-                        />
+ <div className={`w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white font-bold text-lg relative shadow-md`}>
+                    {user?.email?.[0]?.toUpperCase() || "?"}
+                  
+                  </div>
                         <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white shadow-sm"></div>
                       </div>
                       <div className="flex flex-col items-start">
                         <span className="font-semibold text-sm leading-tight">
-                          {user?.name || 'User'}
+                          {user?.lastname || 'Customer'}
                         </span>
                         <span className="text-xs text-gray-500 leading-tight">
                           {user?.role || 'Member'}
@@ -215,11 +214,10 @@ export function Header() {
                         {/* User Info Section */}
                         <div className="px-4 py-3 border-b border-gray-100">
                           <div className="flex items-center space-x-3">
-                            <img
-                              src={user?.avatar || '/api/placeholder/48/48'}
-                              alt={user?.name}
-                              className="w-12 h-12 rounded-full object-cover"
-                            />
+                           <div className={`w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white font-bold text-lg relative shadow-md`}>
+                    {user?.email?.[0]?.toUpperCase() || "?"}
+                  
+                  </div>
                             <div className="flex-1">
                               <p className="font-semibold text-gray-900">{user?.name}</p>
                               <p className="text-sm text-gray-500">{user?.email}</p>
@@ -229,14 +227,14 @@ export function Header() {
                                   <span className="text-xs text-gray-600">4.9 rating</span>
                                 </div>
                                 <span className="text-gray-300">•</span>
-                                <span className="text-xs text-teal-600 font-medium">Pro Member</span>
+                                <span className="text-xs text-teal-600 font-medium">Customer</span>
                               </div>
                             </div>
                           </div>
                         </div>
                         
                         {/* Quick Stats */}
-                        <div className="px-4 py-3 border-b border-gray-100">
+                        {/* <div className="px-4 py-3 border-b border-gray-100">
                           <div className="grid grid-cols-3 gap-3 text-center">
                             <div className="bg-teal-50 rounded-lg p-2">
                               <div className="text-lg font-bold text-teal-700">47</div>
@@ -251,10 +249,10 @@ export function Header() {
                               <div className="text-xs text-gray-600">Success</div>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                         
                         {/* Menu Items */}
-                        <div className="py-2">
+                        {/* <div className="py-2">
                           <Link 
                             href="/dashboard" 
                             className="flex items-center px-4 py-3 text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition-colors duration-150 group"
@@ -287,7 +285,7 @@ export function Header() {
                             <Settings size={18} className="mr-3 text-gray-400 group-hover:text-teal-500" />
                             Settings
                           </Link>
-                        </div>
+                        </div> */}
                         
                         {/* Logout Section */}
                         <div className="border-t border-gray-100 pt-2">
